@@ -1,7 +1,6 @@
 package tfar.classicbar.overlays.modoverlays;
 
 import baubles.api.BaublesApi;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

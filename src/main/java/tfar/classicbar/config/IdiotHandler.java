@@ -8,7 +8,7 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.regex.Matcher;
 
 import static tfar.classicbar.ColorUtils.p1;
-import static tfar.classicbar.config.ModConfig.*;
+import static tfar.classicbar.config.ModConfig.colors;
 
 public class IdiotHandler {
     public static IdiotHandler idiots = new IdiotHandler();
