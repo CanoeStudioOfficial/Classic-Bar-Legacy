@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import tfar.classicbar.Color;
 import tfar.classicbar.overlays.IBarOverlay;
 
-import static com.charles445.simpledifficulty.client.gui.ThirstGui.ICONS;
+import static com.charles445.simpledifficulty.client.gui.ThirstGui.THIRSTHUD;
 import static tfar.classicbar.ColorUtils.hex2Color;
 import static tfar.classicbar.ModUtils.*;
 import static tfar.classicbar.config.ModConfig.*;
@@ -113,10 +113,10 @@ public class SDThirstBarRenderer implements IBarOverlay {
             iconIndex += 4;
             backgroundOffset += 117;
         }
-        mc.getTextureManager().bindTexture(ICONS);
+        mc.getTextureManager().bindTexture(THIRSTHUD);
 
-        drawTexturedModalRect(xStart + 82, yStart, backgroundOffset, 16, 9,9);
-        drawTexturedModalRect(xStart + 82, yStart, (iconIndex + 4) * 9, 16, 9, 9);
+        drawTexturedModalRect(xStart + 82, yStart, backgroundOffset, 9, 9,9);
+        drawTexturedModalRect(xStart + 82, yStart, (iconIndex + 4) * 9, 9, 9, 9);
     }
 
     @Override
