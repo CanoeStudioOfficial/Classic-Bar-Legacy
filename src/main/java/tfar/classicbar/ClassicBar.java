@@ -71,6 +71,7 @@ public class ClassicBar {
         //if (Loader.isModLoaded("superiorshields"))
         //  MinecraftForge.EVENT_BUS.register(new SuperiorShieldRenderer());
         if (TOUGHASNAILS) EventHandler.register(new ThirstBarRenderer());
+        if (SIMPLEDIFFICULTY) EventHandler.register(new SDThirstBarRenderer());
         if (Loader.isModLoaded("botania")) EventHandler.register(new TiaraBarRenderer());
         if (VAMPIRISM) EventHandler.register(new VampireRenderer());
         EventHandler.setup();
