@@ -13,7 +13,6 @@ import tfar.classicbar.overlays.IBarOverlay;
 
 import static tfar.classicbar.ColorUtils.hex2Color;
 import static tfar.classicbar.ModUtils.*;
-import static tfar.classicbar.ModUtils.drawTexturedModalRect;
 import static tfar.classicbar.config.ModConfig.*;
 
 public class ArmorRenderer implements IBarOverlay {

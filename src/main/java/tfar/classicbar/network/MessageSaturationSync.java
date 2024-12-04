@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import tfar.classicbar.ClassicBar;
 
 public class MessageSaturationSync implements IMessage, IMessageHandler<MessageSaturationSync, IMessage>
 {

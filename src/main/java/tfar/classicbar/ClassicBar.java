@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.IEventListener;
-import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 import tfar.classicbar.classicbar.Tags;
 import tfar.classicbar.config.ModConfig;
@@ -27,9 +26,10 @@ public class ClassicBar {
 
     public static final String DEPENDENCIES = "after:randomtweaks@[1.12.2-2.7.1.0,);";
 
-    public static final String[] problemMods = new String[]{"mantle", "toughasnails"};
+    public static final String[] problemMods = new String[]{"mantle", "toughasnails", "simpledifficulty"};
 
     public static final boolean TOUGHASNAILS = Loader.isModLoaded("toughasnails");
+    public static final boolean SIMPLEDIFFICULTY = Loader.isModLoaded("simpledifficulty");
     public static final boolean IBLIS = Loader.isModLoaded("iblis");
     public static final boolean BAUBLES = Loader.isModLoaded("baubles");
     public static final boolean RANDOMTWEAKS = Loader.isModLoaded("randomtweaks");
@@ -92,6 +92,10 @@ public class ClassicBar {
                     }
                     else if ("toughasnails.handler.thirst.ThirstOverlayHandler".equals(s)) {
                         logger.info("Unregistered Thirst bar");
+                        MinecraftForge.EVENT_BUS.unregister(key);
+                    }
+                    else if ("com.charles445.simpledifficulty.client.gui.ThirstGui".equals(s)) {
+                        logger.info("Unregistered SDThirst bar");
                         MinecraftForge.EVENT_BUS.unregister(key);
                     }
                 });

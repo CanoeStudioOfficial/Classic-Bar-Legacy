@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import tfar.classicbar.ClassicBar;
 import tfar.classicbar.EventHandler;
-import tfar.classicbar.ModUtils;
 import tfar.classicbar.classicbar.Tags;
 
 import static tfar.classicbar.config.IdiotHandler.idiots;
