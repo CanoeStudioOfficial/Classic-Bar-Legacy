@@ -75,7 +75,7 @@ public class ModConfig {
             public String[] leftorder = new String[]{"health","armor","absorption","lavacharm","lavacharm2"};
 
             @Config.Name("Bar right order")
-            public String[] rightorder = new String[]{"blood","healthmount","food","armortoughness","thirst","air","flighttiara","decay"};
+            public String[] rightorder = new String[]{"blood","healthmount","food","armortoughness","thirst","air","flighttiara","decay","endurance"};
 
             @Config.Name("Low hunger warning threshold")
             public double lowHungerThreshold = .3;
@@ -122,6 +122,9 @@ public class ModConfig {
 
         @Config.Name(s+"Thirst")
         public boolean showThirstNumbers = true;
+
+        @Config.Name(s+"Endurance")
+        public boolean showEnduranceNumbers = true;
 
         @Config.Name(s+"Tiara")
         public boolean showTiaraNumbers = true;
@@ -237,6 +240,9 @@ public class ModConfig {
 
         @Config.Name("Thirst Bar Color")
         public String thirstBarColor = "#1C5EE4";
+
+        @Config.Name("Endurance Bar Color")
+        public String enduranceBarColor = "#FAC420";
 
         @Config.Name("Flight Bar Color")
         public String flightBarColor = "#FFFFFF";
