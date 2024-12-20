@@ -34,6 +34,7 @@ public class ClassicBar {
     public static final boolean BAUBLES = Loader.isModLoaded("baubles");
     public static final boolean RANDOMTWEAKS = Loader.isModLoaded("randomtweaks");
     public static final boolean BETWEENLANDS = Loader.isModLoaded("thebetweenlands");
+    public static final boolean ENDURANCE = Loader.isModLoaded("ercore");
 
     public static final boolean VAMPIRISM = Loader.isModLoaded("vampirism");
 
@@ -72,6 +73,7 @@ public class ClassicBar {
         //  MinecraftForge.EVENT_BUS.register(new SuperiorShieldRenderer());
         if (TOUGHASNAILS) EventHandler.register(new ThirstBarRenderer());
         if (SIMPLEDIFFICULTY) EventHandler.register(new SDThirstBarRenderer());
+        if (ENDURANCE) EventHandler.register(new EnduranceBarRenderer());
         if (Loader.isModLoaded("botania")) EventHandler.register(new TiaraBarRenderer());
         if (VAMPIRISM) EventHandler.register(new VampireRenderer());
         EventHandler.setup();
