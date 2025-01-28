@@ -8,8 +8,10 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.IEventListener;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 import tfar.classicbar.classicbar.Tags;
+import tfar.classicbar.compat.FoodHelper;
 import tfar.classicbar.config.ModConfig;
 import tfar.classicbar.network.SyncHandler;
 import tfar.classicbar.overlays.modoverlays.*;
@@ -46,11 +48,15 @@ public class ClassicBar {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         logger = event.getModLog();
+        FoodHelper.init();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         SyncHandler.init();
+        if (event.getSide() == Side.CLIENT) {
+            TooltipRender.init();
+        }
     }
 
     @Mod.EventHandler
