@@ -20,6 +20,8 @@ import tfar.classicbar.classicbar.Tags;
 import tfar.classicbar.compat.DrinkHelper;
 import tfar.classicbar.compat.FoodHelper;
 
+import java.text.NumberFormat;
+
 import static tfar.classicbar.config.ModConfig.ConfigGeneral.alwaysShowTooltip;
 import static toughasnails.handler.thirst.ThirstOverlayHandler.OVERLAY;
 
@@ -91,7 +93,7 @@ public class TooltipRender {
 				float hydrationValue = DrinkHelper.getDrinkHydration(hoveredStack);
 
 				thirstText = String.format("%d", thirstValue);
-				hydrationText = String.format("%.1f", hydrationValue);
+				hydrationText = NumberFormat.getPercentInstance().format(hydrationValue);
 
 				leftX = rightX - (Math.max(9 + mc.fontRenderer.getStringWidth(thirstText), 9 + mc.fontRenderer.getStringWidth(hydrationText))) - 4;
 			}
