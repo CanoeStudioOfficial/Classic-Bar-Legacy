@@ -17,9 +17,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import tfar.classicbar.ModUtils;
 import tfar.classicbar.classicbar.Tags;
+import tfar.classicbar.compat.DrinkHelper;
 import tfar.classicbar.compat.FoodHelper;
 
-import static tfar.classicbar.config.ModConfig.mods;
+import static tfar.classicbar.config.ModConfig.ConfigGeneral.alwaysShowTooltip;
+import static toughasnails.handler.thirst.ThirstOverlayHandler.OVERLAY;
 
 @SideOnly(Side.CLIENT)
 public class TooltipRender {
@@ -35,102 +37,136 @@ public class TooltipRender {
 	@SubscribeEvent
 	public void onRenderTooltip(RenderTooltipEvent.PostText event) {
 		ItemStack hoveredStack = event.getStack();
-		if (hoveredStack == null || hoveredStack.isEmpty())
-			return;
+		if (hoveredStack == null || hoveredStack.isEmpty()) return;
+		if (FoodHelper.isFood(hoveredStack) || DrinkHelper.isDrink(hoveredStack)) {
+			boolean shouldShowTooltip = (ModUtils.isShiftKeyDown()) || alwaysShowTooltip;
+			if (!shouldShowTooltip) return;
 
-		boolean shouldShowTooltip = (ModUtils.isShiftKeyDown()) || mods.alwaysShowTooltip;
-		if (!shouldShowTooltip)
-			return;
+			Minecraft mc = Minecraft.getMinecraft();
+			GuiScreen gui = mc.currentScreen;
 
-		Minecraft mc = Minecraft.getMinecraft();
-		GuiScreen gui = mc.currentScreen;
+			if (gui == null) return;
 
-		if (gui == null)
-			return;
+			EntityPlayer player = mc.player;
+			ScaledResolution scale = new ScaledResolution(mc);
+			int toolTipY = event.getY();
+			int toolTipX = event.getX();
+			int toolTipW = event.getWidth();
+			int toolTipH = event.getHeight();
 
-		if (!FoodHelper.isFood(hoveredStack))
-			return;
+			int toolTipBottomY = toolTipY + toolTipH + 1 + TOOLTIP_REAL_HEIGHT_OFFSET_BOTTOM;
+			int toolTipRightX = toolTipX + toolTipW + 1 + TOOLTIP_REAL_WIDTH_OFFSET_RIGHT;
 
-		EntityPlayer player = mc.player;
-		ScaledResolution scale = new ScaledResolution(mc);
-		int toolTipY = event.getY();
-		int toolTipX = event.getX();
-		int toolTipW = event.getWidth();
-		int toolTipH = event.getHeight();
+			boolean shouldDrawBelow = toolTipBottomY + 20 < scale.getScaledHeight() - 3;
 
-		FoodHelper.BasicFoodValues defaultFoodValues = FoodHelper.getDefaultFoodValues(hoveredStack);
-		FoodHelper.BasicFoodValues modifiedFoodValues = FoodHelper.getModifiedFoodValues(hoveredStack, player);
+			String hungerText = "";
+			String saturationText = "";
+			String thirstText = "";
+			String hydrationText = "";
 
-		defaultFoodValues = FoodHelper.getFoodValuesForDisplay(defaultFoodValues, player);
-		modifiedFoodValues = FoodHelper.getFoodValuesForDisplay(modifiedFoodValues, player);
+			int rightX = toolTipRightX - 2;
+			int leftX = 0;
+			int topY = (shouldDrawBelow ? toolTipBottomY : toolTipY - 20 + TOOLTIP_REAL_HEIGHT_OFFSET_TOP);
+			int bottomY = topY + 22;
 
-		if (defaultFoodValues.equals(modifiedFoodValues) && defaultFoodValues.hunger == 0)
-			return;
+			if (FoodHelper.isFood(hoveredStack)) {
+				FoodHelper.BasicFoodValues defaultFoodValues = FoodHelper.getDefaultFoodValues(hoveredStack);
+				FoodHelper.BasicFoodValues modifiedFoodValues = FoodHelper.getModifiedFoodValues(hoveredStack, player);
 
-		int biggestHunger = Math.max(defaultFoodValues.hunger, modifiedFoodValues.hunger);
-		float biggestSaturationIncrement = Math.max(defaultFoodValues.getSaturationIncrement(), modifiedFoodValues.getSaturationIncrement());
+				defaultFoodValues = FoodHelper.getFoodValuesForDisplay(defaultFoodValues, player);
+				modifiedFoodValues = FoodHelper.getFoodValuesForDisplay(modifiedFoodValues, player);
 
-		String hungerText = String.format("%d", biggestHunger);
-		String saturationText = String.format("%.1f", biggestSaturationIncrement);
+				if (defaultFoodValues.equals(modifiedFoodValues) && defaultFoodValues.hunger == 0) return;
 
-		int toolTipBottomY = toolTipY + toolTipH + 1 + TOOLTIP_REAL_HEIGHT_OFFSET_BOTTOM;
-		int toolTipRightX = toolTipX + toolTipW + 1 + TOOLTIP_REAL_WIDTH_OFFSET_RIGHT;
+				int biggestHunger = Math.max(defaultFoodValues.hunger, modifiedFoodValues.hunger);
+				float biggestSaturationIncrement = Math.max(defaultFoodValues.getSaturationIncrement(), modifiedFoodValues.getSaturationIncrement());
 
-		boolean shouldDrawBelow = toolTipBottomY + 20 < scale.getScaledHeight() - 3;
+				hungerText = String.format("%d", biggestHunger);
+				saturationText = String.format("%.1f", biggestSaturationIncrement);
 
-		int rightX = toolTipRightX - 2;
-		int leftX = rightX - (Math.max(9 + mc.fontRenderer.getStringWidth(hungerText), 9 + mc.fontRenderer.getStringWidth(saturationText))) - 4;
-		int topY = (shouldDrawBelow ? toolTipBottomY : toolTipY - 20 + TOOLTIP_REAL_HEIGHT_OFFSET_TOP);
-		int bottomY = topY + 22;
+				leftX = rightX - (Math.max(9 + mc.fontRenderer.getStringWidth(hungerText), 9 + mc.fontRenderer.getStringWidth(saturationText))) - 4;
+			}
+			if (DrinkHelper.isDrink(hoveredStack)) {
+				int thirstValue = DrinkHelper.getDrinkThirst(hoveredStack);
+				float hydrationValue = DrinkHelper.getDrinkHydration(hoveredStack);
 
-		GlStateManager.disableLighting();
-		GlStateManager.disableDepth();
+				thirstText = String.format("%d", thirstValue);
+				hydrationText = String.format("%.1f", hydrationValue);
 
-		// bg
-		Gui.drawRect(leftX - 1, topY, rightX + 1, bottomY, 0xF0100010);
-		Gui.drawRect(leftX, (shouldDrawBelow ? bottomY : topY - 1), rightX, (shouldDrawBelow ? bottomY + 1 : topY), 0xF0100010);
-		Gui.drawRect(leftX, topY, rightX, bottomY, 0x66FFFFFF);
+				leftX = rightX - (Math.max(9 + mc.fontRenderer.getStringWidth(thirstText), 9 + mc.fontRenderer.getStringWidth(hydrationText))) - 4;
+			}
 
-		// drawRect disables blending and modifies color, so reset them
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GlStateManager.disableLighting();
+			GlStateManager.disableDepth();
 
-		int x = rightX - 2;
-		int startX = x;
-		int y = bottomY - 18;
+			// bg
+			Gui.drawRect(leftX - 1, topY, rightX + 1, bottomY, 0xF0100010);
+			Gui.drawRect(leftX, (shouldDrawBelow ? bottomY : topY - 1), rightX, (shouldDrawBelow ? bottomY + 1 : topY), 0xF0100010);
+			Gui.drawRect(leftX, topY, rightX, bottomY, 0x66FFFFFF);
 
-		mc.getTextureManager().bindTexture(Gui.ICONS);
+			// drawRect disables blending and modifies color, so reset them
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			GlStateManager.enableBlend();
+			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		x -= 9;
-		y -= 2;
-		gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(hungerText) - 1, y, 16, 27, 9, 9);
-		gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(hungerText) - 1, y, 61, 27, 9, 9);
+			int x = rightX - 2;
+			int startX = x;
+			int y = bottomY - 18;
 
-		GlStateManager.pushMatrix();
-		mc.fontRenderer.drawStringWithShadow(hungerText, x - mc.fontRenderer.getStringWidth(hungerText) + 10, y, 0xFFDDDDDD);
-		GlStateManager.popMatrix();
+			if (FoodHelper.isFood(hoveredStack)) {
+				mc.getTextureManager().bindTexture(Gui.ICONS);
+			}
+			if (DrinkHelper.isDrink(hoveredStack)) {
+				mc.getTextureManager().bindTexture(OVERLAY);
+			}
 
-        y += 10;
-		x = startX;
+			x -= 9;
+			y -= 2;
 
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(modIcons);
+			if (FoodHelper.isFood(hoveredStack)) {
+				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(hungerText) - 1, y, 16, 27, 9, 9);
+				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(hungerText) - 1, y, 61, 27, 9, 9);
 
-		x -= 9;
-		gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(saturationText) - 1, y, 0, 0, 9, 9);
+				GlStateManager.pushMatrix();
+				mc.fontRenderer.drawStringWithShadow(hungerText, x - mc.fontRenderer.getStringWidth(hungerText) + 10, y, 0xFFDDDDDD);
+				GlStateManager.popMatrix();
+			}
+			if (DrinkHelper.isDrink(hoveredStack)) {
+				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 0, 16, 9, 9);
+				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 45, 16, 9, 9);
 
-		GlStateManager.pushMatrix();
-		mc.fontRenderer.drawStringWithShadow(saturationText, x - mc.fontRenderer.getStringWidth(saturationText) + 10, y, 0xFFDDDDDD);
-		GlStateManager.popMatrix();
+				GlStateManager.pushMatrix();
+				mc.fontRenderer.drawStringWithShadow(thirstText, x - mc.fontRenderer.getStringWidth(thirstText) + 10, y, 0xFFDDDDDD);
+				GlStateManager.popMatrix();
+			}
+			y += 10;
+			x = startX;
 
-        GlStateManager.disableBlend();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			mc.getTextureManager().bindTexture(modIcons);
 
-		// reset to drawHoveringText state
-		GlStateManager.disableRescaleNormal();
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.disableLighting();
-		GlStateManager.disableDepth();
+			x -= 9;
+			if (FoodHelper.isFood(hoveredStack)) {
+				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(saturationText) - 1, y, 0, 0, 9, 9);
+
+				GlStateManager.pushMatrix();
+				mc.fontRenderer.drawStringWithShadow(saturationText, x - mc.fontRenderer.getStringWidth(saturationText) + 10, y, 0xFFDDDDDD);
+				GlStateManager.popMatrix();
+			}
+			if (DrinkHelper.isDrink(hoveredStack)) {
+				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(hydrationText) - 1, y, 9, 0, 9, 9);
+
+				GlStateManager.pushMatrix();
+				mc.fontRenderer.drawStringWithShadow(hydrationText, x - mc.fontRenderer.getStringWidth(hydrationText) + 10, y, 0xFFDDDDDD);
+				GlStateManager.popMatrix();
+			}
+
+			GlStateManager.disableBlend();
+
+			// reset to drawHoveringText state
+			GlStateManager.disableRescaleNormal();
+			RenderHelper.disableStandardItemLighting();
+			GlStateManager.disableLighting();
+			GlStateManager.disableDepth();
+		}
 	}
 }

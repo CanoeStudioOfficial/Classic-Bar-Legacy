@@ -41,6 +41,9 @@ public class ModConfig {
         @Config.Name("Show Icons")
         @Config.Comment("Whether to show icons next to the bars")
         public boolean displayIcons = true;
+        @Config.Name("Always Show Food Values Tooltip")
+        @Config.Comment("Whether to show food values tooltip without shift down.")
+        public static boolean alwaysShowTooltip = true;
         public class BarOverlays {
 
             @Config.Name("Hunger Bar Overlays")
@@ -257,9 +260,5 @@ public class ModConfig {
         @Config.Name("Dehydration Secondary Bar Color")
         @Config.Comment("This is the overlay for hydration when underneath the effect")
         public String deHydrationSecondaryBarColor = "#85CF25";
-
-        @Config.Name("Always Show Food Values Tooltip")
-        @Config.Comment("Whether to show food values tooltip without shift down.")
-        public boolean alwaysShowTooltip = true;
     }
 }
