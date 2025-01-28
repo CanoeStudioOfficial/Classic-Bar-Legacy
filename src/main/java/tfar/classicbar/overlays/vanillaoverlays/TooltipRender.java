@@ -22,7 +22,7 @@ import tfar.classicbar.compat.FoodHelper;
 
 import java.text.NumberFormat;
 
-import static tfar.classicbar.config.ModConfig.ConfigGeneral.alwaysShowTooltip;
+import static tfar.classicbar.config.ModConfig.general;
 import static toughasnails.handler.thirst.ThirstOverlayHandler.OVERLAY;
 
 @SideOnly(Side.CLIENT)
@@ -41,7 +41,7 @@ public class TooltipRender {
 		ItemStack hoveredStack = event.getStack();
 		if (hoveredStack == null || hoveredStack.isEmpty()) return;
 		if (FoodHelper.isFood(hoveredStack) || DrinkHelper.isDrink(hoveredStack)) {
-			boolean shouldShowTooltip = (ModUtils.isShiftKeyDown()) || alwaysShowTooltip;
+			boolean shouldShowTooltip = (ModUtils.isShiftKeyDown()) || general.alwaysShowTooltip;
 			if (!shouldShowTooltip) return;
 
 			Minecraft mc = Minecraft.getMinecraft();
