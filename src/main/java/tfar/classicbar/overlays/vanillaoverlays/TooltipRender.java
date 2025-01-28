@@ -80,8 +80,8 @@ public class TooltipRender {
 
 		int rightX = toolTipRightX - 2;
 		int leftX = rightX - (Math.max(9 + mc.fontRenderer.getStringWidth(hungerText), 9 + mc.fontRenderer.getStringWidth(saturationText))) - 4;
-		int topY = (shouldDrawBelow ? toolTipBottomY : toolTipY - 20 + TOOLTIP_REAL_HEIGHT_OFFSET_TOP) + 1;
-		int bottomY = topY + 21;
+		int topY = (shouldDrawBelow ? toolTipBottomY : toolTipY - 20 + TOOLTIP_REAL_HEIGHT_OFFSET_TOP);
+		int bottomY = topY + 22;
 
 		GlStateManager.disableLighting();
 		GlStateManager.disableDepth();
