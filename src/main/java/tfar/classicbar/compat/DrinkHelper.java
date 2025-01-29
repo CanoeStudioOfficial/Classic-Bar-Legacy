@@ -165,6 +165,8 @@ public class DrinkHelper {
                 int type = stack.getTagCompound().getInteger("CanteenType");
                 if (type == 0) {
                     drinkValue = new DrinkValue(ThirstEnum.NORMAL.getThirst(), ThirstEnum.NORMAL.getSaturation());
+                } else if (type == 1) {
+                    drinkValue = new DrinkValue(ThirstEnum.SALT.getThirst(), ThirstEnum.SALT.getSaturation());
                 } else if (type == 3) {
                     drinkValue = new DrinkValue(ThirstEnum.PURIFIED.getThirst(), ThirstEnum.PURIFIED.getSaturation());
                 }
