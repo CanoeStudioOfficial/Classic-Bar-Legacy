@@ -167,7 +167,7 @@ public class DrinkHelper {
                     drinkValue = new DrinkValue(ThirstEnum.NORMAL.getThirst(), ThirstEnum.NORMAL.getSaturation());
                 } else if (type == 1) {
                     drinkValue = new DrinkValue(ThirstEnum.SALT.getThirst(), ThirstEnum.SALT.getSaturation());
-                } else if (type == 3) {
+                } else if (type == 3 || type == 4) {
                     drinkValue = new DrinkValue(ThirstEnum.PURIFIED.getThirst(), ThirstEnum.PURIFIED.getSaturation());
                 }
             } else if (stack.getItem() instanceof ItemDrinkBase) {
