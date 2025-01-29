@@ -137,7 +137,7 @@ public class TooltipRender {
 
 			if (FoodHelper.isFood(hoveredStack)) {
 				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(hungerText) - 1, y, 16, 27, 9, 9);
-				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(hungerText) - 1, y, 61, 27, 9, 9);
+				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(hungerText) - 1, y, 52, 27, 9, 9);
 
 				GlStateManager.pushMatrix();
 				mc.fontRenderer.drawStringWithShadow(hungerText, x - mc.fontRenderer.getStringWidth(hungerText) + 10, y, 0xFFDDDDDD);
@@ -146,10 +146,10 @@ public class TooltipRender {
 			if (DrinkHelper.isDrink(hoveredStack)) {
 				if (Loader.isModLoaded("toughasnails")) {
 					gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 0, 16, 9, 9);
-					gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 45, 16, 9, 9);
+					gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 36, 16, 9, 9);
 				} else if (Loader.isModLoaded("simpledifficulty")) {
 					gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 0, 0, 9, 9);
-					gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 45, 0, 9, 9);
+					gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 36, 0, 9, 9);
 				}
 
 				GlStateManager.pushMatrix();
