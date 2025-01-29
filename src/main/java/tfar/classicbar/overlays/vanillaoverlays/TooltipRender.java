@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,6 +23,7 @@ import tfar.classicbar.compat.FoodHelper;
 
 import java.text.NumberFormat;
 
+import static com.charles445.simpledifficulty.client.gui.ThirstGui.THIRSTHUD;
 import static tfar.classicbar.config.ModConfig.general;
 import static toughasnails.handler.thirst.ThirstOverlayHandler.OVERLAY;
 
@@ -89,11 +91,15 @@ public class TooltipRender {
 				leftX = rightX - (Math.max(9 + mc.fontRenderer.getStringWidth(hungerText), 9 + mc.fontRenderer.getStringWidth(saturationText))) - 4;
 			}
 			if (DrinkHelper.isDrink(hoveredStack)) {
-				int thirstValue = DrinkHelper.getDrinkThirst(hoveredStack);
-				float hydrationValue = DrinkHelper.getDrinkHydration(hoveredStack);
+				int thirstValue = DrinkHelper.getDrinkData(hoveredStack).thirst;
+				float hydrationValue = DrinkHelper.getDrinkData(hoveredStack).hydration;
 
 				thirstText = String.format("%d", thirstValue);
-				hydrationText = NumberFormat.getPercentInstance().format(hydrationValue);
+				if (Loader.isModLoaded("toughasnails")) {
+					hydrationText = NumberFormat.getPercentInstance().format(hydrationValue);
+				} else if (Loader.isModLoaded("simpledifficulty")) {
+					hydrationText = String.format("%.1f", hydrationValue);
+				}
 
 				leftX = rightX - (Math.max(9 + mc.fontRenderer.getStringWidth(thirstText), 9 + mc.fontRenderer.getStringWidth(hydrationText))) - 4;
 			}
@@ -119,7 +125,11 @@ public class TooltipRender {
 				mc.getTextureManager().bindTexture(Gui.ICONS);
 			}
 			if (DrinkHelper.isDrink(hoveredStack)) {
-				mc.getTextureManager().bindTexture(OVERLAY);
+				if (Loader.isModLoaded("toughasnails")) {
+					mc.getTextureManager().bindTexture(OVERLAY);
+				} else if (Loader.isModLoaded("simpledifficulty")) {
+					mc.getTextureManager().bindTexture(THIRSTHUD);
+				}
 			}
 
 			x -= 9;
@@ -134,8 +144,13 @@ public class TooltipRender {
 				GlStateManager.popMatrix();
 			}
 			if (DrinkHelper.isDrink(hoveredStack)) {
-				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 0, 16, 9, 9);
-				gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 45, 16, 9, 9);
+				if (Loader.isModLoaded("toughasnails")) {
+					gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 0, 16, 9, 9);
+					gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 45, 16, 9, 9);
+				} else if (Loader.isModLoaded("simpledifficulty")) {
+					gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 0, 0, 9, 9);
+					gui.drawTexturedModalRect(x - mc.fontRenderer.getStringWidth(thirstText) - 1, y, 45, 0, 9, 9);
+				}
 
 				GlStateManager.pushMatrix();
 				mc.fontRenderer.drawStringWithShadow(thirstText, x - mc.fontRenderer.getStringWidth(thirstText) + 10, y, 0xFFDDDDDD);
