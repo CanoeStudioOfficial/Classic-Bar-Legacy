@@ -41,6 +41,10 @@ public class ModConfig {
         @Config.Name("Show Icons")
         @Config.Comment("Whether to show icons next to the bars")
         public boolean displayIcons = true;
+        @Config.Name("Always Show Food Values Tooltip")
+        @Config.Comment("Whether to show food values tooltip without shift down.")
+        public boolean alwaysShowTooltip = true;
+
         public class BarOverlays {
 
             @Config.Name("Hunger Bar Overlays")

@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import org.lwjgl.input.Keyboard;
 import tfar.classicbar.classicbar.Tags;
 
 public class ModUtils {
@@ -66,5 +67,9 @@ public class ModUtils {
 
     public static void setExhaustion(EntityPlayer player, float exhaustion) {
         ObfuscationReflectionHelper.setPrivateValue(FoodStats.class, player.getFoodStats(), exhaustion, "field_75126_c");
+    }
+
+    public static boolean isShiftKeyDown() {
+        return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
     }
 }
