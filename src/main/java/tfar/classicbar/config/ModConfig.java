@@ -19,6 +19,8 @@ import static tfar.classicbar.config.IdiotHandler.idiots;
 @Config(modid = Tags.MOD_ID)
 public class ModConfig {
 
+
+
     @Config.Comment("General Options")
     public static ConfigGeneral general = new ConfigGeneral();
 
@@ -44,6 +46,10 @@ public class ModConfig {
         @Config.Name("Always Show Food Values Tooltip")
         @Config.Comment("Whether to show food values tooltip without shift down.")
         public boolean alwaysShowTooltip = true;
+
+        @Config.Name("Replenish Air Slowly")
+        @Config.Comment("Enable slow air replenishment")
+        public boolean replenishAirSlowly = true;
 
         public class BarOverlays {
 
