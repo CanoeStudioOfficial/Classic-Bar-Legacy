@@ -28,7 +28,7 @@ public class AirRenderer implements IBarOverlay {
 
   @Override
   public boolean shouldRender(EntityPlayer player) {
-      return player.getAir() < 300 && general.replenishAirSlowly;
+      return player.getAir() < 300;
   }
 
   @Override
