@@ -44,7 +44,8 @@ public class DrinkHelper {
                     }
                 }
             }
-        } else if (Loader.isModLoaded("simpledifficulty")) {
+        }
+        if (drinkValue == null && Loader.isModLoaded("simpledifficulty")) {
             List<JsonConsumableThirst> consumableList = JsonConfig.consumableThirst.get(stack.getItem().getRegistryName().toString());
             if (consumableList != null) {
                 for (JsonConsumableThirst jct : consumableList) {
@@ -70,7 +71,8 @@ public class DrinkHelper {
                     }
                 }
             }
-        } else if (Loader.isModLoaded("simpledifficulty")) {
+        }
+        if (drinkValue == null && Loader.isModLoaded("simpledifficulty")) {
             List<JsonConsumableThirst> consumableList = JsonConfig.consumableThirst.get(stack.getItem().getRegistryName().toString());
             if (consumableList != null) {
                 for (JsonConsumableThirst jct : consumableList) {
@@ -85,6 +87,10 @@ public class DrinkHelper {
     }
 
     public static DrinkValue getDrinkData(ItemStack stack) {
+        if (stack == null || stack.isEmpty()) {
+            return null;
+        }
+        
         DrinkValue drinkValue = null;
         if (Loader.isModLoaded("toughasnails")) {
             if (stack.getItem().equals(Items.POTIONITEM)) {
@@ -100,21 +106,28 @@ public class DrinkHelper {
             } else {
                 drinkValue = getDrinkValue(stack);
             }
-        } else if (Loader.isModLoaded("simpledifficulty")) {
+        }
+        
+        if (drinkValue == null && Loader.isModLoaded("simpledifficulty")) {
             if (stack.getItem().equals(Items.POTIONITEM)) {
                 if (!stack.hasEffect()) {
                     drinkValue = new DrinkValue(ThirstEnum.NORMAL.getThirst(), ThirstEnum.NORMAL.getSaturation());
                 } else {
                     drinkValue = new DrinkValue(ThirstEnum.POTION.getThirst(), ThirstEnum.POTION.getSaturation());
                 }
-            } else if (stack.getItem() instanceof com.charles445.simpledifficulty.item.ItemCanteen && stack.getTagCompound().getInteger("Doses") != 0) {
-                int type = stack.getTagCompound().getInteger("CanteenType");
-                if (type == 0) {
-                    drinkValue = new DrinkValue(ThirstEnum.NORMAL.getThirst(), ThirstEnum.NORMAL.getSaturation());
-                } else if (type == 1) {
-                    drinkValue = new DrinkValue(ThirstEnum.SALT.getThirst(), ThirstEnum.SALT.getSaturation());
-                } else if (type == 3 || type == 4) {
-                    drinkValue = new DrinkValue(ThirstEnum.PURIFIED.getThirst(), ThirstEnum.PURIFIED.getSaturation());
+            } else if (stack.getItem() instanceof com.charles445.simpledifficulty.item.ItemCanteen) {
+                if (stack.hasTagCompound()) {
+                    int doses = stack.getTagCompound().getInteger("Doses");
+                    if (doses != 0) {
+                        int type = stack.getTagCompound().getInteger("CanteenType");
+                        if (type == 0) {
+                            drinkValue = new DrinkValue(ThirstEnum.NORMAL.getThirst(), ThirstEnum.NORMAL.getSaturation());
+                        } else if (type == 1) {
+                            drinkValue = new DrinkValue(ThirstEnum.SALT.getThirst(), ThirstEnum.SALT.getSaturation());
+                        } else if (type == 3 || type == 4) {
+                            drinkValue = new DrinkValue(ThirstEnum.PURIFIED.getThirst(), ThirstEnum.PURIFIED.getSaturation());
+                        }
+                    }
                 }
             } else if (stack.getItem() instanceof ItemDrinkBase) {
                 drinkValue = getJuiceValue(stack);
@@ -122,6 +135,7 @@ public class DrinkHelper {
                 drinkValue = getDrinkValue(stack);
             }
         }
+        
         return drinkValue;
     }
 }
