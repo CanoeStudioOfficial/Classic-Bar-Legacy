@@ -46,7 +46,7 @@ public class ModConfig {
         @Config.Name("Always Show Food Values Tooltip")
         @Config.Comment("Whether to show food values tooltip without shift down.")
         public boolean alwaysShowTooltip = true;
-        
+
 
         public class BarOverlays {
 
