@@ -4,7 +4,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import tfar.classicbar.Color;
-import tfar.classicbar.config.ModConfig;
 import tfar.classicbar.overlays.IBarOverlay;
 
 import static tfar.classicbar.ColorUtils.hex2Color;

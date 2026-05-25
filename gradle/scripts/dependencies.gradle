@@ -40,7 +40,7 @@ dependencies {
     implementation "curse.maven:vampirism-become-a-vampire-233029:2890062"
     implementation "curse.maven:baubles-227083:2518667"
     compileOnly "curse.maven:simpledifficulty-for-underdog-574162:4651150"
-    compileOnly "curse.maven:ercore-702132:6007565"
+    compileOnly "curse.maven:ercore-702132:7602870"
     compileOnly "curse.maven:applecore-224472:2481612"
 
     // Example - Dependency descriptor:

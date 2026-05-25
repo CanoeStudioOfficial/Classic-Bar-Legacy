@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import tfar.classicbar.Color;
 import tfar.classicbar.overlays.IBarOverlay;
 
-import static com.origins_eternity.ercore.content.gui.Overlay.gui;
+import static com.origins_eternity.ercore.content.gui.Overlay.GUI;
 import static tfar.classicbar.ColorUtils.hex2Color;
 import static tfar.classicbar.ModUtils.*;
 import static tfar.classicbar.config.ModConfig.*;
@@ -34,7 +34,7 @@ public class EnduranceBarRenderer implements IBarOverlay {
     @Override
     public void renderBar(EntityPlayer player, int width, int height) {
         IEndurance endurance = player.getCapability(Capabilities.ENDURANCE, null);
-        int value = (int) endurance.getEndurance();
+        int value = endurance.getEndurance();
         float exhaustion = endurance.getExhaustion();
         int xStart = width / 2 + 10;
         int yStart = height - getSidedOffset();
@@ -43,9 +43,9 @@ public class EnduranceBarRenderer implements IBarOverlay {
         GlStateManager.enableBlend();
         Color.reset();
         drawTexturedModalRect(xStart, yStart, 0, 0, 81, 9);
-        float f = xStart+79-getWidth(value,endurance.getHealth());
+        float f = xStart+79-getWidth(value,endurance.getMaxEndurance());
         hex2Color(mods.enduranceBarColor).color2Gl();
-        drawTexturedModalRect(f, yStart + 1, 1, 10, getWidth(value,endurance.getHealth()), 7);
+        drawTexturedModalRect(f, yStart + 1, 1, 10, getWidth(value,endurance.getMaxEndurance()), 7);
         exhaustion = Math.min(exhaustion, 1);
         f = xStart - getWidth(exhaustion, 1) + 80;
         GlStateManager.color(1, 1, 1, .25f);
@@ -65,7 +65,7 @@ public class EnduranceBarRenderer implements IBarOverlay {
         int xStart = width / 2 + 10;
         int yStart = height - getSidedOffset();
         IEndurance endurance = player.getCapability(Capabilities.ENDURANCE, null);
-        int value = (int) endurance.getEndurance();
+        int value = endurance.getEndurance();
         int h1 = value;
         int c = Integer.decode(mods.enduranceBarColor);
         if (numbers.showPercent)h1 = value*5;
@@ -76,7 +76,7 @@ public class EnduranceBarRenderer implements IBarOverlay {
     public void renderIcon(EntityPlayer player, int width, int height) {
         int xStart = width / 2 + 10;
         int yStart = height - getSidedOffset();
-        mc.getTextureManager().bindTexture(gui);
+        mc.getTextureManager().bindTexture(GUI);
         drawTexturedModalRect(xStart + 82, yStart, 0, 0, 8,9);
         drawTexturedModalRect(xStart + 82, yStart, 0, 9, 8, 9);
     }

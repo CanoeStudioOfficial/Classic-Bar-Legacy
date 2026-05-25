@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-@Mod(modid = Tags.MOD_ID, name = Tags.MOD_NAME, version = Tags.VERSION)
+@Mod(modid = Tags.MOD_ID, name = Tags.MOD_NAME, version = Tags.VERSION, dependencies = "after:ercore@[1.3.0,);")
 public class ClassicBar {
 
     public static final String DEPENDENCIES = "after:randomtweaks@[1.12.2-2.7.1.0,);";

@@ -4,7 +4,6 @@ import com.charles445.simpledifficulty.api.config.JsonConfig;
 import com.charles445.simpledifficulty.api.config.json.JsonConsumableThirst;
 import com.charles445.simpledifficulty.api.thirst.ThirstEnum;
 import com.charles445.simpledifficulty.item.ItemDrinkBase;
-import com.charles445.simpledifficulty.item.ItemJuice;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
@@ -13,7 +12,6 @@ import toughasnails.api.thirst.WaterType;
 import toughasnails.config.json.DrinkData;
 import toughasnails.init.ModConfig;
 import toughasnails.item.ItemCanteen;
-import toughasnails.item.ItemFruitJuice;
 
 import java.util.List;
 
