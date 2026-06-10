@@ -28,7 +28,7 @@ public class ClassicBar {
 
     public static final String DEPENDENCIES = "after:randomtweaks@[1.12.2-2.7.1.0,);";
 
-    public static final String[] problemMods = new String[]{"mantle", "toughasnails", "simpledifficulty"};
+    public static final String[] problemMods = new String[]{"mantle", "toughasnails", "simpledifficulty", "aquaacrobatics"};
 
     public static final boolean TOUGHASNAILS = Loader.isModLoaded("toughasnails");
     public static final boolean SIMPLEDIFFICULTY = Loader.isModLoaded("simpledifficulty");
@@ -104,6 +104,10 @@ public class ClassicBar {
                     }
                     else if ("com.charles445.simpledifficulty.client.gui.ThirstGui".equals(s)) {
                         logger.info("Unregistered SDThirst bar");
+                        MinecraftForge.EVENT_BUS.unregister(key);
+                    }
+                    else if (EventHandler.isBarEnabled("air") && "com.fuzs.aquaacrobatics.client.handler.AirMeterHandler".equals(s)) {
+                        logger.info("Unregistered Aqua Acrobatics air meter");
                         MinecraftForge.EVENT_BUS.unregister(key);
                     }
                 });

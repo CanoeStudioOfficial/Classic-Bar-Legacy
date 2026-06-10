@@ -104,6 +104,10 @@ public class EventHandler {
         setupSide(ModConfig.general.overlays.rightorder, true);
     }
 
+    public static boolean isBarEnabled(String name) {
+        return enabledBars.contains(normalizeName(name));
+    }
+
     private static void setupSide(String[] order, boolean right) {
         Arrays.stream(order).map(EventHandler::normalizeName).filter(s -> registry.get(s) != null && !disabledBars.contains(s)).forEach(e -> {
             combined.add(registry.get(e).setSide(right));
