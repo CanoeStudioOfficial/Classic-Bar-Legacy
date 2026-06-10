@@ -57,7 +57,7 @@ public class LavaWaderBaubleRenderer implements IBarOverlay {
     int xStart = width / 2 - 91;
     int yStart = height - getSidedOffset();
     mc.profiler.startSection("charge");
-    //GlStateManager.pushMatrix();
+    GlStateManager.pushMatrix();
     GlStateManager.enableBlend();
 
     //Bar background

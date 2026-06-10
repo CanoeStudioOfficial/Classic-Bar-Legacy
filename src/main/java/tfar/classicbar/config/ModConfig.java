@@ -81,11 +81,28 @@ public class ModConfig {
             @Config.Name("Display low hunger warning")
             public boolean lowHungerWarning = true;
 
+            @Config.Name("Disabled bars")
+            @Config.Comment({
+                    "Bars listed here will not be rendered by Classic Bar.",
+                    "Valid names include health, armor, absorption, lavacharm, lavawader2, blood, healthmount, food, armortoughness, thirst, air, flighttiara, decay, endurance."
+            })
+            public String[] disabledBars = new String[]{};
+
             @Config.Name("Bar left order")
+            @Config.Comment("Bars listed here render on the left side in this order. Remove a bar here and add it to Bar right order to move it to the right side.")
             public String[] leftorder = new String[]{"health","armor","absorption","lavacharm","lavacharm2"};
 
             @Config.Name("Bar right order")
+            @Config.Comment("Bars listed here render on the right side in this order. Remove a bar here and add it to Bar left order to move it to the left side.")
             public String[] rightorder = new String[]{"blood","healthmount","food","armortoughness","thirst","air","flighttiara","decay","endurance"};
+
+            @Config.Name("Bar position offsets")
+            @Config.Comment({
+                    "Fine tune individual bar positions in pixels.",
+                    "Format: barName:xOffset:yOffset. Positive X moves right, positive Y moves down.",
+                    "Example: food:0:-10 moves the food bar up by 10 pixels."
+            })
+            public String[] barOffsets = new String[]{};
 
             @Config.Name("Low hunger warning threshold")
             public double lowHungerThreshold = .3;

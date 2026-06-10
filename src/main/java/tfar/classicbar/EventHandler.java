@@ -1,6 +1,7 @@
 package tfar.classicbar;
 
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.GuiIngameForge;
@@ -20,13 +21,16 @@ public class EventHandler {
 
     private static final List<IBarOverlay> combined = new ArrayList<>();
     private static final Map<String, IBarOverlay> registry = new HashMap<>();
+    private static final Set<String> disabledBars = new HashSet<>();
+    private static final Set<String> enabledBars = new HashSet<>();
+    private static final Map<String, BarOffset> barOffsets = new HashMap<>();
 
     public static void register(IBarOverlay iBarOverlay) {
-        registry.put(iBarOverlay.name(), iBarOverlay);
+        registry.put(normalizeName(iBarOverlay.name()), iBarOverlay);
     }
 
     public static void registerAll(IBarOverlay... iBarOverlay) {
-        Arrays.stream(iBarOverlay).forEach(overlay -> registry.put(overlay.name(), overlay));
+        Arrays.stream(iBarOverlay).forEach(EventHandler::register);
     }
 
     @SubscribeEvent
@@ -34,11 +38,20 @@ public class EventHandler {
         //cancel all events that the mod handles as we don't want them to draw
         switch (event.getType()) {
             case AIR:
+                cancelIfEnabled(event, "air");
+                return;
             case ARMOR:
+                cancelIfEnabled(event, "armor");
+                return;
             case HEALTHMOUNT:
+                cancelIfEnabled(event, "healthmount");
+                return;
             case FOOD:
+                cancelIfEnabled(event, "food");
+                return;
             case HEALTH:
-                event.setCanceled(true);
+                cancelIfEnabled(event, "health");
+                return;
             default:
                 return;
             case ALL:
@@ -57,10 +70,8 @@ public class EventHandler {
         Supplier<Stream<IBarOverlay>> supplier = () -> combined.stream().filter(iBarOverlay -> iBarOverlay.shouldRender(player));
 
         supplier.get().forEach(iBarOverlay -> {
-            iBarOverlay.renderBar(player, scaledWidth, scaledHeight);
-            if (iBarOverlay.rightHandSide())
-                GuiIngameForge.right_height+=10;
-            else GuiIngameForge.left_height+=10;
+            renderWithOffset(iBarOverlay, () -> iBarOverlay.renderBar(player, scaledWidth, scaledHeight));
+            advanceHeight(iBarOverlay);
         });
 
         GuiIngameForge.right_height = initial_right_height;
@@ -68,10 +79,8 @@ public class EventHandler {
 
         supplier.get().forEach(iBarOverlay -> {
             if (iBarOverlay.shouldRenderText())
-                iBarOverlay.renderText(player, scaledWidth, scaledHeight);
-            if (iBarOverlay.rightHandSide())
-                GuiIngameForge.right_height+=10;
-            else GuiIngameForge.left_height+=10;
+                renderWithOffset(iBarOverlay, () -> iBarOverlay.renderText(player, scaledWidth, scaledHeight));
+            advanceHeight(iBarOverlay);
         });
 
         if (general.displayIcons) {
@@ -79,10 +88,8 @@ public class EventHandler {
             GuiIngameForge.left_height = initial_left_height;
 
             supplier.get().forEach(iBarOverlay -> {
-                iBarOverlay.renderIcon(player, scaledWidth, scaledHeight);
-                if (iBarOverlay.rightHandSide())
-                    GuiIngameForge.right_height += 10;
-                else GuiIngameForge.left_height += 10;
+                renderWithOffset(iBarOverlay, () -> iBarOverlay.renderIcon(player, scaledWidth, scaledHeight));
+                advanceHeight(iBarOverlay);
             });
         }
         mc.getTextureManager().bindTexture(Gui.ICONS);
@@ -90,7 +97,102 @@ public class EventHandler {
 
     public static void setup() {
         combined.clear();
-        Arrays.stream(ModConfig.general.overlays.leftorder).filter(s -> registry.get(s) != null).forEach(e -> combined.add(registry.get(e).setSide(false)));
-        Arrays.stream(ModConfig.general.overlays.rightorder).filter(s -> registry.get(s) != null).forEach(e -> combined.add(registry.get(e).setSide(true)));
+        enabledBars.clear();
+        setupDisabledBars();
+        setupBarOffsets();
+        setupSide(ModConfig.general.overlays.leftorder, false);
+        setupSide(ModConfig.general.overlays.rightorder, true);
+    }
+
+    private static void setupSide(String[] order, boolean right) {
+        Arrays.stream(order).map(EventHandler::normalizeName).filter(s -> registry.get(s) != null && !disabledBars.contains(s)).forEach(e -> {
+            combined.add(registry.get(e).setSide(right));
+            enabledBars.add(e);
+        });
+    }
+
+    private static void setupDisabledBars() {
+        disabledBars.clear();
+        Arrays.stream(ModConfig.general.overlays.disabledBars).map(EventHandler::normalizeName).filter(s -> !s.isEmpty()).forEach(disabledBars::add);
+    }
+
+    private static void setupBarOffsets() {
+        barOffsets.clear();
+        Arrays.stream(ModConfig.general.overlays.barOffsets).forEach(EventHandler::addBarOffset);
+    }
+
+    private static void addBarOffset(String offsetConfig) {
+        if (offsetConfig == null) return;
+        String trimmed = offsetConfig.trim();
+        if (trimmed.isEmpty()) return;
+
+        String[] parts = trimmed.split(":");
+        if (parts.length != 3) {
+            warnBadOffset(trimmed);
+            return;
+        }
+
+        try {
+            String name = normalizeName(parts[0]);
+            int xOffset = Integer.parseInt(parts[1].trim());
+            int yOffset = Integer.parseInt(parts[2].trim());
+            if (!name.isEmpty()) barOffsets.put(name, new BarOffset(xOffset, yOffset));
+        } catch (NumberFormatException e) {
+            warnBadOffset(trimmed);
+        }
+    }
+
+    private static void renderWithOffset(IBarOverlay iBarOverlay, BarRender renderer) {
+        BarOffset offset = barOffsets.get(normalizeName(iBarOverlay.name()));
+        if (offset == null || offset.isZero()) {
+            renderer.render();
+            return;
+        }
+
+        GlStateManager.pushMatrix();
+        try {
+            GlStateManager.translate(offset.x, offset.y, 0);
+            renderer.render();
+        } finally {
+            GlStateManager.popMatrix();
+        }
+    }
+
+    private static void advanceHeight(IBarOverlay iBarOverlay) {
+        if (iBarOverlay.rightHandSide())
+            GuiIngameForge.right_height += 10;
+        else GuiIngameForge.left_height += 10;
+    }
+
+    private static void cancelIfEnabled(RenderGameOverlayEvent.Pre event, String name) {
+        if (enabledBars.contains(name)) event.setCanceled(true);
+    }
+
+    private static String normalizeName(String name) {
+        String normalized = name == null ? "" : name.trim().toLowerCase(Locale.ROOT);
+        return "lavacharm2".equals(normalized) ? "lavawader2" : normalized;
+    }
+
+    private static void warnBadOffset(String offsetConfig) {
+        if (ClassicBar.logger != null)
+            ClassicBar.logger.warn("Ignoring bad Classic Bar offset '{}'. Expected format is barName:xOffset:yOffset", offsetConfig);
+    }
+
+    private interface BarRender {
+        void render();
+    }
+
+    private static class BarOffset {
+        private final int x;
+        private final int y;
+
+        private BarOffset(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        private boolean isZero() {
+            return x == 0 && y == 0;
+        }
     }
 }
