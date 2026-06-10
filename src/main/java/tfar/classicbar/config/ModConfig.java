@@ -47,6 +47,9 @@ public class ModConfig {
         @Config.Comment("Whether to show food values tooltip without shift down.")
         public boolean alwaysShowTooltip = true;
 
+        @Config.Name("Enable Food/Drink Tooltip")
+        @Config.Comment("Set to false to completely disable Classic Bar's own food and drink status tooltip.")
+        public boolean enableFoodTooltip = true;
 
         public class BarOverlays {
 

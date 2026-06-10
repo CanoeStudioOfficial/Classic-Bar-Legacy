@@ -42,6 +42,8 @@ public class TooltipRender {
 	public void onRenderTooltip(RenderTooltipEvent.PostText event) {
 		ItemStack hoveredStack = event.getStack();
 		if (hoveredStack == null || hoveredStack.isEmpty()) return;
+		if (!general.enableFoodTooltip) return;
+
 		if (FoodHelper.isFood(hoveredStack) || DrinkHelper.isDrink(hoveredStack)) {
 			boolean shouldShowTooltip = (ModUtils.isShiftKeyDown()) || general.alwaysShowTooltip;
 			if (!shouldShowTooltip) return;
