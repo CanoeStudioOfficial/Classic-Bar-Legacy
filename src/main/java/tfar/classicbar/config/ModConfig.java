@@ -241,6 +241,7 @@ public class ModConfig {
                 idiots.idiotsTryingToParseBadHexColorsDOTJpeg();
                 idiots.emptyArrayFixer();
                 EventHandler.setup();
+                ClassicBar.syncClientCompat();
                 ClassicBar.logger.info("Syncing Classic Bar Configs");
             }
         }
