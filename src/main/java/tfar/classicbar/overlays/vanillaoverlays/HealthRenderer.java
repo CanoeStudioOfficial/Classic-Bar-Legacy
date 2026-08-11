@@ -19,9 +19,9 @@ public class HealthRenderer implements IBarOverlay {
 
   private final Minecraft mc = Minecraft.getMinecraft();
 
-  private double playerHealth = 0;
+  private double playerBarValue = 0;
   private long healthUpdateCounter = 0;
-  private double lastPlayerHealth = 0;
+  private double lastPlayerBarValue = 0;
 
   public boolean side;
 
@@ -46,18 +46,19 @@ public class HealthRenderer implements IBarOverlay {
     int updateCounter = mc.ingameGUI.getUpdateCounter();
 
     double health = player.getHealth();
+    double barValue = getBarValue(player);
     boolean highlight = healthUpdateCounter > (long) updateCounter && (healthUpdateCounter - (long) updateCounter) / 3 % 2 == 1;
 
     //player is damaged and resistant
-    if (health < playerHealth && player.hurtResistantTime > 0) {
+    if (barValue < playerBarValue && player.hurtResistantTime > 0) {
       healthUpdateCounter = (long) (updateCounter + 20);
-      lastPlayerHealth = playerHealth;
-    } else if (health > playerHealth && player.hurtResistantTime > 0) {
+      lastPlayerBarValue = playerBarValue;
+    } else if (barValue > playerBarValue && player.hurtResistantTime > 0) {
       healthUpdateCounter = (long) (updateCounter + 10);
-      /* lastPlayerHealth = playerHealth;*/
+      /* lastPlayerBarValue = playerBarValue; */
     }
-    playerHealth = health;
-    double displayHealth = health + (lastPlayerHealth - health) * ((double) player.hurtResistantTime / player.maxHurtResistantTime);
+    playerBarValue = barValue;
+    double displayBarValue = barValue + (lastPlayerBarValue - barValue) * ((double) player.hurtResistantTime / player.maxHurtResistantTime);
 
     int xStart = width / 2 - 91;
     int yStart = height - GuiIngameForge.left_height;
@@ -82,29 +83,29 @@ public class HealthRenderer implements IBarOverlay {
             (int) (Minecraft.getSystemTime() / 250) % 2 : 1;
 
     //interpolate the bar
-    if (displayHealth != health) {
+    if (displayBarValue != barValue) {
       //reset to white
       GlStateManager.color(1, 1, 1, alpha);
-      if (displayHealth > health) {
+      if (displayBarValue > barValue) {
         //draw interpolation
-        drawTexturedModalRect(xStart + 1, yStart + 1, 1, 10, getWidth(displayHealth, maxHealth), 7);
+        drawTexturedModalRect(xStart + 1, yStart + 1, 1, 10, getWidth(displayBarValue, maxHealth), 7);
         //Health is increasing, idk what to do here
       } else {/*
                   f = xStart + getWidth(health, maxHealth);
-                  drawTexturedModalRect(f, yStart + 1, 1, 10, getWidth(health - displayHealth, maxHealth), 7, general.style, true, true);*/
+                  drawTexturedModalRect(f, yStart + 1, 1, 10, getWidth(health - displayBarValue, maxHealth), 7, general.style, true, true);*/
       }
     }
 
     //calculate bar color
 
-    calculateScaledColor(health, maxHealth, k5).color2Gla(alpha);
+    calculateScaledColor(barValue, maxHealth, k5, general.overlays.combineAbsorptionWithHealth).color2Gla(alpha);
     //draw portion of bar based on health remaining
-    drawTexturedModalRect(xStart + 1, yStart + 1, 1, 10, getWidth(health, maxHealth), 7);
+    drawTexturedModalRect(xStart + 1, yStart + 1, 1, 10, getWidth(barValue, maxHealth), 7);
 
     if (k5 == 52) {
       //draw poison overlay
       GlStateManager.color(0, .5f, 0, .5f);
-      drawTexturedModalRect(xStart + 1, yStart + 1, 1, 36, getWidth(health, maxHealth), 7);
+      drawTexturedModalRect(xStart + 1, yStart + 1, 1, 36, getWidth(barValue, maxHealth), 7);
     }
 
     Color.reset();
@@ -123,7 +124,7 @@ public class HealthRenderer implements IBarOverlay {
 
   @Override
   public void renderText(EntityPlayer player, int width, int height) {
-    double health = player.getHealth();
+    double health = getBarValue(player);
 
     int xStart = width / 2 - 91;
     int yStart = height - GuiIngameForge.left_height;
@@ -139,7 +140,12 @@ public class HealthRenderer implements IBarOverlay {
     if (numbers.showPercent) h1 = (int) (100 * health / maxHealth);
     int i1 = getStringLength(h1 + "");
 
-    drawStringOnHUD(h1 + "", xStart - 9 * i2 - i1 + leftTextOffset, yStart - 1, calculateScaledColor(health, maxHealth, k5).colorToText());
+    drawStringOnHUD(h1 + "", xStart - 9 * i2 - i1 + leftTextOffset, yStart - 1,
+            calculateScaledColor(health, maxHealth, k5, general.overlays.combineAbsorptionWithHealth).colorToText());
+  }
+
+  private double getBarValue(EntityPlayer player) {
+    return player.getHealth() + (general.overlays.combineAbsorptionWithHealth ? player.getAbsorptionAmount() : 0);
   }
 
   @Override

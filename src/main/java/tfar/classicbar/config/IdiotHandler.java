@@ -22,6 +22,7 @@ public class IdiotHandler {
         colors.hungerBarColor = isSomeoneAttemptingToAddABadHexCodeToTheConfigQuestionMark(colors.hungerBarColor);
         colors.oxygenBarColor = isSomeoneAttemptingToAddABadHexCodeToTheConfigQuestionMark(colors.oxygenBarColor);
         colors.saturationBarColor = isSomeoneAttemptingToAddABadHexCodeToTheConfigQuestionMark(colors.saturationBarColor);
+        colors.advancedColors.healthAboveMaximumColor = isSomeoneAttemptingToAddABadHexCodeToTheConfigQuestionMark(colors.advancedColors.healthAboveMaximumColor);
     }
 
     public String isSomeoneAttemptingToAddABadHexCodeToTheConfigQuestionMark(String s) {
@@ -46,14 +47,14 @@ public class IdiotHandler {
                 return;
             } else {
                 p.sendMessage(new TextComponentString(color + "USER PUT IN AN EMPTY ARRAY FOR HEALTH COLOR SCALING"));
-                colors.advancedColors.normalFractions = new double[]{.25, .5, .75};
-                colors.advancedColors.normalColors = new String[]{"#FF0000", "#FFFF00", "#00FF00"};
+                colors.advancedColors.normalFractions = new double[]{.25, .5, .75, 1, 1.25};
+                colors.advancedColors.normalColors = new String[]{"#FF0000", "#FFFF00", "#00FF00", "#00FF00", "#00FFFF"};
                 return;
             }
         }
         if (colors.advancedColors.normalColors.length == 0) {
             p.sendMessage(new TextComponentString(color + "USER PUT IN AN EMPTY ARRAY FOR HEALTH COLOR SCALING"));
-            colors.advancedColors.normalColors = new String[colors.advancedColors.normalColors.length];
+            colors.advancedColors.normalColors = new String[colors.advancedColors.normalFractions.length];
             for (double i1 = 0; i1 < colors.advancedColors.normalFractions.length; i1++)
                 colors.advancedColors.normalColors[(int) i1] = "#000000";
         }

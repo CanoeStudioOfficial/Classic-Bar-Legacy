@@ -16,6 +16,10 @@ public class ColorUtils {
     }
 
     public static Color calculateScaledColor(double d1, double d2, int effect) {
+        return calculateScaledColor(d1, d2, effect, false);
+    }
+
+    public static Color calculateScaledColor(double d1, double d2, int effect, boolean useAboveMaximumFallback) {
         double d3 = (d1 / d2);
 
         String[] colorCodes;
@@ -32,6 +36,8 @@ public class ColorUtils {
         }
 
         if (colorCodes.length != colorFractions.length) return Color.BLACK;
+        if (useAboveMaximumFallback && d3 > 1 && !hasFractionAboveOne(colorFractions))
+            return hex2Color(colors.advancedColors.healthAboveMaximumColor);
         int i1 = colorFractions.length - 1;
         int i3 = 0;
         for (int i2 = 0; i2 < i1; i2++) {
@@ -51,5 +57,12 @@ public class ColorUtils {
 
         double d4 = (d3 - colorFractions[i3 - 1]) / (colorFractions[i3] - colorFractions[i3 - 1]);
         return c1.colorBlend(c2, d4);
+    }
+
+    private static boolean hasFractionAboveOne(double[] fractions) {
+        for (double fraction : fractions) {
+            if (fraction > 1) return true;
+        }
+        return false;
     }
 }

@@ -29,7 +29,7 @@ public class AbsorptionRenderer implements IBarOverlay {
 
   @Override
   public boolean shouldRender(EntityPlayer player) {
-    return player.getAbsorptionAmount() > 0;
+    return player.getAbsorptionAmount() > 0 && !general.overlays.combineAbsorptionWithHealth;
   }
 
   @Override

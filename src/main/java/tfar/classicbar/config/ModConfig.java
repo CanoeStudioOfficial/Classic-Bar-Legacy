@@ -62,6 +62,13 @@ public class ModConfig {
             @Config.Name("Draw full absorption Bar")
             public boolean fullAbsorptionBar = false;
 
+            @Config.Name("Combine Absorption With Health")
+            @Config.Comment({
+                    "Include absorption in the health bar instead of rendering a separate absorption bar.",
+                    "When enabled, health numbers and percentages include the absorption amount."
+            })
+            public boolean combineAbsorptionWithHealth = false;
+
             @Config.Name("Draw full armor Bar")
             public boolean fullArmorBar = false;
 
@@ -205,9 +212,14 @@ public class ModConfig {
             public String[] absorptionWitherColorValues = new String[]{"#D4AF37","#C2C73B","#8DC337","#36BA77","#4A5BC4","#D89AE2","#DF9DC7","#DFA99D","#D4DF9D","#3E84C6","#B8C1E8","#DFDFDF"};
 
             @Config.Name("Health fractions")
-            public double[] normalFractions = new double[]{.25, .5, .75};
+            @Config.Comment("Fractions may be greater than 1 to define colors for health above the normal maximum.")
+            public double[] normalFractions = new double[]{.25, .5, .75, 1, 1.25};
             @Config.Name("Colors")
-            public String[] normalColors = new String[]{"#FF0000", "#FFFF00", "#00FF00"};
+            public String[] normalColors = new String[]{"#FF0000", "#FFFF00", "#00FF00", "#00FF00", "#00FFFF"};
+
+            @Config.Name("Health Above Maximum Color")
+            @Config.Comment("Fallback color for combined health and absorption when no health color fraction above 1 is configured.")
+            public String healthAboveMaximumColor = "#00FFFF";
 
             @Config.Name("Poisoned fractions")
             public double[] poisonedFractions = new double[]{.25, .5, .75};
